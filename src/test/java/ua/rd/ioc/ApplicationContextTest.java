@@ -56,6 +56,14 @@ public class ApplicationContextTest {
         assertTrue(Arrays.asList(beanDefinitionsNames).contains("tweet"));
     }
 
+    @Test
+    public void testGetBean() {
+        Map<String, Class<?>> beanDescriptions = createTestBeanDescriptions();
+        Context context = new ApplicationContext(new JavaConfig(beanDescriptions));
+        assertNotNull(context.getBean("tweet"));
+    }
+
+
     private Map<String, Class<?>> createTestBeanDescriptions() {
         return new HashMap<String, Class<?>>() {{
             put("tweet", Tweet.class);

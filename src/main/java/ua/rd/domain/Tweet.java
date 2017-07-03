@@ -4,6 +4,9 @@ public class Tweet {
     private String user;
     private String msg;
 
+    public Tweet() {
+    }
+
     public Tweet(String user, String msg) {
         this.user = user;
         this.msg = msg;

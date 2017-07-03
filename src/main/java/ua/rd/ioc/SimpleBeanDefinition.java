@@ -14,4 +14,9 @@ public class SimpleBeanDefinition implements BeanDefinition {
     public String getBeanName() {
         return beanName;
     }
+
+    @Override
+    public <T> Class<T> getType() {
+        return (Class <T>) this.type;
+    }
 }

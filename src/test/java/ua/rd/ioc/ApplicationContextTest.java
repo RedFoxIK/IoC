@@ -85,4 +85,16 @@ public class ApplicationContextTest {
         Object bean = context.getBean(TWEET_BEAN_NAME);
         assertNotNull(bean);
     }
+
+    @Test
+    public void testGetTwoSameBeansEqual() throws Exception {
+        Map<String, Class<?>> beanDescriptions = createBeanDescriptions();
+        Config config = new JavaConfig(beanDescriptions);
+        Context context = new ApplicationContext(config);
+
+        Object bean1 = context.getBean(TWEET_BEAN_NAME);
+        Object bean2 = context.getBean(TWEET_BEAN_NAME);
+
+        assertSame(bean1, bean2);
+    }
 }

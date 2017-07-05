@@ -103,6 +103,20 @@ public class ApplicationContextTest {
         assertSame(bean1, bean2);
     }
 
+    // TODO: 7/5/2017 implement
+/*
+    @Test
+    public void testGetTwoSameBeansAsPrototypeNotEqual() throws Exception {
+        Map<String, Class<?>> beanDescriptions = createBeanDescriptions();
+        Config config = new JavaConfig(beanDescriptions);
+        Context context = new ApplicationContext(config);
+
+        Object bean1 = context.getBean(TWEET_BEAN_NAME);
+        Object bean2 = context.getBean(TWEET_BEAN_NAME);
+
+        assertSame(bean1, bean2);
+    }
+*/
     @Test
     public void testInitMethodCalled() throws Exception {
         Map<String, Class<?>> beanDescriptions = createBeanDescriptions();

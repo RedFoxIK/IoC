@@ -4,12 +4,20 @@ package ua.rd.ioc;
  * Created by Vitalii_Sharapov on 7/3/2017.
  */
 public class SimpleBeanDefinition implements BeanDefinition {
+
     private final String name;
     private final Class<?> clazz;
+    private final boolean isPrototype;
 
     public SimpleBeanDefinition(String name, Class<?> value) {
+        this(name, value, false);
+    }
+
+    public SimpleBeanDefinition(String name,
+                                Class<?> clazz, boolean isPrototype) {
         this.name = name;
-        this.clazz = value;
+        this.clazz = clazz;
+        this.isPrototype = isPrototype;
     }
 
     @Override
@@ -20,5 +28,10 @@ public class SimpleBeanDefinition implements BeanDefinition {
     @Override
     public <T> Class<T> getType() {
         return (Class<T>) clazz;
+    }
+
+    @Override
+    public boolean isPrototype() {
+        return isPrototype;
     }
 }

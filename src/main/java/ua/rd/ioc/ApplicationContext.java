@@ -41,6 +41,8 @@ public class ApplicationContext implements Context {
         bean = createBeanWithNoArgConstructor(beanName);
         callInitMethod(bean);
 
+        // TODO: 7/5/2017 if prototype then do not put to context. also do not
+        // call destroy on prototype because it is not in context
         context.put(beanName, bean);
 
         return bean;

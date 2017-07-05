@@ -10,10 +10,14 @@ import java.util.List;
  */
 public class InMemTweetRepository implements TweetRepository {
 
-    private List<Tweet> tweets = Arrays.asList(
-            new Tweet("vitalii", "first tweet"),
-            new Tweet("dassem", "first sword")
-    );
+    private List<Tweet> tweets;
+
+    public void init() {
+        tweets = Arrays.asList(
+                new Tweet("vitalii", "first tweet"),
+                new Tweet("dassem", "first sword")
+        );
+    }
 
     @Override
     public Iterable<Tweet> getAllTweets() {

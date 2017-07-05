@@ -5,6 +5,8 @@ package ua.rd.ioc;
  */
 import org.junit.Test;
 import ua.rd.domain.Tweet;
+import ua.rd.repository.InMemTweetRepository;
+import ua.rd.repository.TweetRepository;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -15,6 +17,7 @@ import static org.junit.Assert.*;
 public class ApplicationContextTest {
 
     public static final String TWEET_BEAN_NAME = "tweet";
+    public static final String TWEET_REPOSITORY_BEAN_NAME = "tweetRepository";
 
     @Test
     public void testInitContextWithoutConfig() throws Exception {
@@ -56,7 +59,7 @@ public class ApplicationContextTest {
 
         BeanDefinition[] beanDefinitions = config.getBeanDefinitions();
 
-        assertEquals(1, beanDefinitions.length);
+        assertEquals(2, beanDefinitions.length);
     }
 
     @Test
@@ -73,6 +76,8 @@ public class ApplicationContextTest {
     private Map<String, Class<?>> createBeanDescriptions() {
         Map<String, Class<?>> beanDescriptions = new HashMap<>();
         beanDescriptions.put(TWEET_BEAN_NAME, Tweet.class);
+        beanDescriptions.put(TWEET_REPOSITORY_BEAN_NAME,
+                InMemTweetRepository.class);
         return beanDescriptions;
     }
 
@@ -96,5 +101,17 @@ public class ApplicationContextTest {
         Object bean2 = context.getBean(TWEET_BEAN_NAME);
 
         assertSame(bean1, bean2);
+    }
+
+    @Test
+    public void testInitMethodCalled() throws Exception {
+        Map<String, Class<?>> beanDescriptions = createBeanDescriptions();
+        Config config = new JavaConfig(beanDescriptions);
+        Context context = new ApplicationContext(config);
+
+        TweetRepository tweetRepository =
+                context.getBean(TWEET_REPOSITORY_BEAN_NAME);
+
+        assertNotNull(tweetRepository.getAllTweets());
     }
 }

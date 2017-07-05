@@ -1,6 +1,8 @@
 package ua.rd.ioc;
 
 import ua.rd.domain.Tweet;
+import ua.rd.repository.InMemTweetRepository;
+import ua.rd.repository.TweetRepository;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -12,16 +14,20 @@ import java.util.Map;
 public class Main {
     public static void main(String[] args) {
         Map<String, Class<?>> beanDescriptions = new HashMap<>();
-        beanDescriptions.put("tweet", Tweet.class);
+        beanDescriptions.put("tweetRepository", InMemTweetRepository.class);
 
         Config config = new JavaConfig(beanDescriptions);
         Context context = new ApplicationContext(config);
 
-        System.out.println("Bean definitions : " + Arrays.toString(config.getBeanDefinitions()));
-        System.out.println("Bean definition names: " + Arrays.toString(context.getBeanDefinitionNames()));
+        System.out.println("Bean definitions : "
+                + Arrays.toString(config.getBeanDefinitions()));
+        System.out.println("Bean definition names: "
+                + Arrays.toString(context.getBeanDefinitionNames()));
 
-        Tweet tweet = context.getBean("tweet");
+        TweetRepository tweetRepository = context.getBean("tweetRepository");
 
-        System.out.println("Bean name : " + tweet);
+        System.out.println("Bean name : " + tweetRepository);
+        System.out.println("Tweets from repository : "
+                + tweetRepository.getAllTweets());
     }
 }

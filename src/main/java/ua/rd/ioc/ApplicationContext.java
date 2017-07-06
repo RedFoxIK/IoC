@@ -1,6 +1,9 @@
 package ua.rd.ioc;
 
-import java.lang.reflect.*;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -33,10 +36,9 @@ public class ApplicationContext implements Context {
         BeanDefinition[] beanDefinitions = config.getBeanDefinitions();
 
         for (BeanDefinition beanDefinition : beanDefinitions) {
-            String beanName = beanDefinition.getBeanName();
-
-            // TODO: 7/5/2017 ignore prototypes
-            createBean(beanName);
+            if (!beanDefinition.isPrototype()) {
+                createBean(beanDefinition.getBeanName());
+            }
         }
     }
 
@@ -50,10 +52,12 @@ public class ApplicationContext implements Context {
 
     @Override
     public <T> T getBean(String beanName) {
-        // TODO: 7/5/2017 if prototype create bean
-        // call destroy on prototype because it is not in context
-
-        return (T) context.get(beanName);
+        return (T) Arrays.stream(config.getBeanDefinitions())
+                .filter(bd -> bd.getBeanName().equals(beanName))
+                .findFirst()
+                .filter(BeanDefinition::isPrototype)
+                .map(bd -> newInstance(bd.getType()))
+                .orElse(context.get(beanName));
     }
 
     private <T> void callInitMethod(T bean) {
@@ -74,7 +78,6 @@ public class ApplicationContext implements Context {
             return;
         }
 
-        // TODO: 7/5/2017 consider prototype
         BeanDefinition beanDefinition = getBeanDefinition(beanName);
         Class<?> beanType = beanDefinition.getType();
         Constructor<?> beanConstructor = beanType.getConstructors()[0];

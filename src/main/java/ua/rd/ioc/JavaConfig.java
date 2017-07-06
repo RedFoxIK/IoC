@@ -13,10 +13,10 @@ public class JavaConfig implements Config {
         this.beanDefinitions = new BeanDefinition[0];
     }
 
-    public JavaConfig(Map<String, Class<?>> beanDescriptions) {
+    public JavaConfig(Map<String, Bean> beanDescriptions) {
         this.beanDefinitions = beanDescriptions.entrySet()
                 .stream()
-                .map(e -> new SimpleBeanDefinition(e.getKey(), e.getValue()))
+                .map(e -> new SimpleBeanDefinition(e.getKey(), e.getValue().getClazz(), e.getValue().isPrototype()))
                 .toArray(BeanDefinition[]::new);
     }
 

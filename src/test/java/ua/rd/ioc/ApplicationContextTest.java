@@ -3,6 +3,7 @@ package ua.rd.ioc;
 /**
  * Created by Vitalii_Sharapov on 7/3/2017.
  */
+
 import org.junit.Test;
 import ua.rd.domain.Tweet;
 import ua.rd.repository.InMemTweetRepository;
@@ -16,8 +17,9 @@ import static org.junit.Assert.*;
 
 public class ApplicationContextTest {
 
-    public static final String TWEET_BEAN_NAME = "tweet";
-    public static final String TWEET_REPOSITORY_BEAN_NAME = "tweetRepository";
+    private static final String PROTOTYPE_BEAN_NAME = "proto";
+    private static final String TWEET_BEAN_NAME = "tweet";
+    private static final String TWEET_REPOSITORY_BEAN_NAME = "tweetRepository";
 
     @Test
     public void testInitContextWithoutConfig() throws Exception {
@@ -54,7 +56,7 @@ public class ApplicationContextTest {
 
     @Test
     public void testBeanDefinitionWithJavaConfig() throws Exception {
-        Map<String, Class<?>> beanDescriptions = createBeanDescriptions();
+        Map<String, Bean> beanDescriptions = createBeanDescriptions();
         Config config = new JavaConfig(beanDescriptions);
 
         BeanDefinition[] beanDefinitions = config.getBeanDefinitions();
@@ -64,7 +66,7 @@ public class ApplicationContextTest {
 
     @Test
     public void testBeanDefinitionNamesWithJavaConfig() throws Exception {
-        Map<String, Class<?>> beanDescriptions = createBeanDescriptions();
+        Map<String, Bean> beanDescriptions = createBeanDescriptions();
         Config config = new JavaConfig(beanDescriptions);
         Context context = new ApplicationContext(config);
 
@@ -73,17 +75,17 @@ public class ApplicationContextTest {
         assertTrue(Arrays.asList(names).contains(TWEET_BEAN_NAME));
     }
 
-    private Map<String, Class<?>> createBeanDescriptions() {
-        Map<String, Class<?>> beanDescriptions = new HashMap<>();
-        beanDescriptions.put(TWEET_BEAN_NAME, Tweet.class);
+    private Map<String, Bean> createBeanDescriptions() {
+        Map<String, Bean> beanDescriptions = new HashMap<>();
+        beanDescriptions.put(TWEET_BEAN_NAME, new Bean(Tweet.class, false));
         beanDescriptions.put(TWEET_REPOSITORY_BEAN_NAME,
-                InMemTweetRepository.class);
+                new Bean(InMemTweetRepository.class, false));
         return beanDescriptions;
     }
 
     @Test
     public void testGetBean() throws Exception {
-        Map<String, Class<?>> beanDescriptions = createBeanDescriptions();
+        Map<String, Bean> beanDescriptions = createBeanDescriptions();
         Config config = new JavaConfig(beanDescriptions);
         Context context = new ApplicationContext(config);
 
@@ -93,7 +95,7 @@ public class ApplicationContextTest {
 
     @Test
     public void testGetTwoSameBeansEqual() throws Exception {
-        Map<String, Class<?>> beanDescriptions = createBeanDescriptions();
+        Map<String, Bean> beanDescriptions = createBeanDescriptions();
         Config config = new JavaConfig(beanDescriptions);
         Context context = new ApplicationContext(config);
 
@@ -103,23 +105,23 @@ public class ApplicationContextTest {
         assertSame(bean1, bean2);
     }
 
-    // TODO: 7/5/2017 implement
-/*
     @Test
     public void testGetTwoSameBeansAsPrototypeNotEqual() throws Exception {
-        Map<String, Class<?>> beanDescriptions = createBeanDescriptions();
+        Map<String, Bean> beanDescriptions = new HashMap<>();
+        beanDescriptions.put(PROTOTYPE_BEAN_NAME,
+                new Bean(Tweet.class, true));
         Config config = new JavaConfig(beanDescriptions);
         Context context = new ApplicationContext(config);
 
-        Object bean1 = context.getBean(TWEET_BEAN_NAME);
-        Object bean2 = context.getBean(TWEET_BEAN_NAME);
+        Object bean1 = context.getBean(PROTOTYPE_BEAN_NAME);
+        Object bean2 = context.getBean(PROTOTYPE_BEAN_NAME);
 
-        assertSame(bean1, bean2);
+        assertNotSame(bean1, bean2);
     }
-*/
+
     @Test
     public void testInitMethodCalled() throws Exception {
-        Map<String, Class<?>> beanDescriptions = createBeanDescriptions();
+        Map<String, Bean> beanDescriptions = createBeanDescriptions();
         Config config = new JavaConfig(beanDescriptions);
         Context context = new ApplicationContext(config);
 

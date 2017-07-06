@@ -12,8 +12,9 @@ import java.util.Map;
  */
 public class Main {
     public static void main(String[] args) {
-        Map<String, Class<?>> beanDescriptions = new HashMap<>();
-        beanDescriptions.put("tweetRepository", InMemTweetRepository.class);
+        Map<String, Bean> beanDescriptions = new HashMap<>();
+        beanDescriptions.put("tweetRepository",
+                new Bean(InMemTweetRepository.class, false));
 
         Config config = new JavaConfig(beanDescriptions);
         Context context = new ApplicationContext(config);

@@ -94,28 +94,45 @@ public class ApplicationContext implements Context {
 
     private Object createBenchmarkProxy(Object bean) {
         Class<?> beanType = bean.getClass();
-        boolean isBenchmarkable = Arrays.stream(beanType.getMethods())
+        boolean hasMethodToBenchmark = Arrays.stream(beanType.getMethods())
                 .anyMatch(m -> m.isAnnotationPresent(Benchmark.class));
 
-        // TODO: 7/5/2017 check if annotation is on
         Object proxyBean = bean;
-        if (isBenchmarkable) {
-            proxyBean = Proxy.newProxyInstance(
-                    ClassLoader.getSystemClassLoader(),
-                    bean.getClass().getInterfaces(),
-                    new InvocationHandler() {
-                        @Override
-                        public Object invoke(Object proxy,
-                                             Method method, Object[] args)
-                                throws Throwable {
-                            System.out.println("Benchmarking : " + method.getName());
-                            return method.invoke(bean, args);
-                        }
-                    }
-            );
+        if (hasMethodToBenchmark) {
+            proxyBean = replaceWithBenchmarkProxy(bean);
         }
 
         return proxyBean;
+    }
+
+    private Object replaceWithBenchmarkProxy(Object bean) {
+        return Proxy.newProxyInstance(
+                ClassLoader.getSystemClassLoader(),
+                bean.getClass().getInterfaces(),
+                (proxy, method, args) -> doBenchmark(bean, method, args)
+        );
+    }
+
+    private Object doBenchmark(Object bean, Method method, Object[] args)
+            throws IllegalAccessException,
+            InvocationTargetException, NoSuchMethodException {
+        Object result;
+
+        Method actualMethod = bean.getClass().getMethod(method.getName());
+        if (actualMethod.isAnnotationPresent(Benchmark.class)
+                && actualMethod.getAnnotation(Benchmark.class).isOn()) {
+            System.out.println("Benchmarking : " + method.getName());
+
+            long before = System.nanoTime();
+            result = method.invoke(bean, args);
+            long after = System.nanoTime();
+
+            System.out.println("Took : " + (after - before) + " ns");
+        } else {
+            result = method.invoke(bean, args);
+        }
+
+        return result;
     }
 
     private BeanDefinition getBeanDefinition(String beanName) {

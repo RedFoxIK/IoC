@@ -1,6 +1,5 @@
 package ua.rd.ioc;
 
-import ua.rd.domain.Tweet;
 import ua.rd.repository.InMemTweetRepository;
 import ua.rd.repository.TweetRepository;
 

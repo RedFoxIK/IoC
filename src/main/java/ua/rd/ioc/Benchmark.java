@@ -11,8 +11,5 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
 public @interface Benchmark {
-
-    // TODO: 7/5/2017 add on/off parameter
-    boolean value() default true;
-
+    boolean isOn() default true;
 }

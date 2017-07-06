@@ -1,13 +1,7 @@
 package ua.rd.ioc;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.NoSuchElementException;
+import java.lang.reflect.*;
+import java.util.*;
 
 /**
  * Considered that bean has only one construct - non arg or with arg but not
@@ -78,21 +72,60 @@ public class ApplicationContext implements Context {
             return;
         }
 
-        BeanDefinition beanDefinition = getBeanDefinition(beanName);
-        Class<?> beanType = beanDefinition.getType();
+        Class<?> beanType = getBeanDefinition(beanName).getType();
         Constructor<?> beanConstructor = beanType.getConstructors()[0];
-        Object bean = null;
+
+        Object bean;
         if (beanConstructor.getParameterCount() == 0) {
             bean = createBeanWithNoArgConstructor(beanType);
         } else {
-            // TODO: 7/5/2017 implement
-            // bean = createBeanWithArgConstruct();
+            bean = createBeanWithArgConstruct(beanConstructor);
         }
 
         callInitMethod(bean);
         bean = createBenchmarkProxy(bean);
 
         context.put(beanName, bean);
+    }
+
+    private Object createBeanWithArgConstruct(Constructor<?> constructor) {
+        Parameter[] parameters = constructor.getParameters();
+        List args = new ArrayList();
+        for (Parameter parameter : parameters) {
+            String beanName = generateBeanName(parameter);
+
+            if (!context.containsKey(beanName)) {
+                addBeanToContext(parameter.getType(), beanName);
+            }
+
+            args.add(getBean(beanName));
+        }
+
+        return newInstance(constructor, args.toArray());
+    }
+
+    private String generateBeanName(Parameter parameter) {
+        String className = parameter.getType().getSimpleName();
+        return className.substring(0, 1).toLowerCase() + className.substring(1);
+    }
+
+    private void addBeanToContext(Class<?> clazz, String beanName) {
+        BeanDefinition beanDefinition = new SimpleBeanDefinition(
+                beanName, clazz, false);
+
+        // TODO: 7/6/2017 ask if updating config is ok
+        config.addBeanDefinition(beanDefinition);
+
+        createBean(beanName);
+    }
+
+    private Object newInstance(Constructor<?> constructor, Object[] args) {
+        try {
+            return constructor.newInstance(args);
+        } catch (InstantiationException |
+                IllegalAccessException | InvocationTargetException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private Object createBenchmarkProxy(Object bean) {

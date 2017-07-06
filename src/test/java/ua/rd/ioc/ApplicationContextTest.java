@@ -8,6 +8,8 @@ import org.junit.Test;
 import ua.rd.domain.Tweet;
 import ua.rd.repository.InMemTweetRepository;
 import ua.rd.repository.TweetRepository;
+import ua.rd.service.SimpleTweetService;
+import ua.rd.service.TweetService;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -17,9 +19,10 @@ import static org.junit.Assert.*;
 
 public class ApplicationContextTest {
 
-    private static final String PROTOTYPE_BEAN_NAME = "proto";
-    private static final String TWEET_BEAN_NAME = "tweet";
-    private static final String TWEET_REPOSITORY_BEAN_NAME = "tweetRepository";
+    private static final String PROTOTYPE_BEAN = "proto";
+    private static final String TWEET_BEAN = "tweet";
+    private static final String TWEET_REPO_BEAN = "tweetRepository";
+    private static final String TWEET_SERVICE_BEAN = "tweetService";
 
     @Test
     public void testInitContextWithoutConfig() throws Exception {
@@ -72,13 +75,13 @@ public class ApplicationContextTest {
 
         String[] names = context.getBeanDefinitionNames();
 
-        assertTrue(Arrays.asList(names).contains(TWEET_BEAN_NAME));
+        assertTrue(Arrays.asList(names).contains(TWEET_BEAN));
     }
 
     private Map<String, Bean> createBeanDescriptions() {
         Map<String, Bean> beanDescriptions = new HashMap<>();
-        beanDescriptions.put(TWEET_BEAN_NAME, new Bean(Tweet.class, false));
-        beanDescriptions.put(TWEET_REPOSITORY_BEAN_NAME,
+        beanDescriptions.put(TWEET_BEAN, new Bean(Tweet.class, false));
+        beanDescriptions.put(TWEET_REPO_BEAN,
                 new Bean(InMemTweetRepository.class, false));
         return beanDescriptions;
     }
@@ -89,7 +92,7 @@ public class ApplicationContextTest {
         Config config = new JavaConfig(beanDescriptions);
         Context context = new ApplicationContext(config);
 
-        Object bean = context.getBean(TWEET_BEAN_NAME);
+        Object bean = context.getBean(TWEET_BEAN);
         assertNotNull(bean);
     }
 
@@ -99,8 +102,8 @@ public class ApplicationContextTest {
         Config config = new JavaConfig(beanDescriptions);
         Context context = new ApplicationContext(config);
 
-        Object bean1 = context.getBean(TWEET_BEAN_NAME);
-        Object bean2 = context.getBean(TWEET_BEAN_NAME);
+        Object bean1 = context.getBean(TWEET_BEAN);
+        Object bean2 = context.getBean(TWEET_BEAN);
 
         assertSame(bean1, bean2);
     }
@@ -108,13 +111,13 @@ public class ApplicationContextTest {
     @Test
     public void testGetTwoSameBeansAsPrototypeNotEqual() throws Exception {
         Map<String, Bean> beanDescriptions = new HashMap<>();
-        beanDescriptions.put(PROTOTYPE_BEAN_NAME,
+        beanDescriptions.put(PROTOTYPE_BEAN,
                 new Bean(Tweet.class, true));
         Config config = new JavaConfig(beanDescriptions);
         Context context = new ApplicationContext(config);
 
-        Object bean1 = context.getBean(PROTOTYPE_BEAN_NAME);
-        Object bean2 = context.getBean(PROTOTYPE_BEAN_NAME);
+        Object bean1 = context.getBean(PROTOTYPE_BEAN);
+        Object bean2 = context.getBean(PROTOTYPE_BEAN);
 
         assertNotSame(bean1, bean2);
     }
@@ -125,9 +128,21 @@ public class ApplicationContextTest {
         Config config = new JavaConfig(beanDescriptions);
         Context context = new ApplicationContext(config);
 
-        TweetRepository tweetRepository =
-                context.getBean(TWEET_REPOSITORY_BEAN_NAME);
+        TweetRepository tweetRepository = context.getBean(TWEET_REPO_BEAN);
 
         assertNotNull(tweetRepository.getAllTweets());
+    }
+
+    @Test
+    public void testBeanWithArgConstructor() throws Exception {
+        Map<String, Bean> beanDescription = createBeanDescriptions();
+        beanDescription.put(TWEET_SERVICE_BEAN,
+                new Bean(SimpleTweetService.class, false));
+        Config config = new JavaConfig(beanDescription);
+        Context context = new ApplicationContext(config);
+
+        TweetService tweetService = context.getBean(TWEET_SERVICE_BEAN);
+
+        assertTrue(tweetService.getAllTweets().iterator().hasNext());
     }
 }

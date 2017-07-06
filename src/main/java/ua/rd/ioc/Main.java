@@ -29,5 +29,7 @@ public class Main {
         System.out.println("Bean name : " + tweetRepository);
         System.out.println("Tweets from repository : "
                 + tweetRepository.getAllTweets());
+
+
     }
 }

@@ -1,6 +1,7 @@
 package ua.rd.repository;
 
 import ua.rd.domain.Tweet;
+import ua.rd.ioc.Benchmark;
 
 import java.util.Arrays;
 import java.util.List;
@@ -20,6 +21,7 @@ public class InMemTweetRepository implements TweetRepository {
     }
 
     @Override
+    @Benchmark
     public Iterable<Tweet> getAllTweets() {
         return tweets;
     }

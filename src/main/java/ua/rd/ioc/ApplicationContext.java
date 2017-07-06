@@ -1,8 +1,6 @@
 package ua.rd.ioc;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
+import java.lang.reflect.*;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -89,8 +87,35 @@ public class ApplicationContext implements Context {
         }
 
         callInitMethod(bean);
+        bean = createBenchmarkProxy(bean);
 
         context.put(beanName, bean);
+    }
+
+    private Object createBenchmarkProxy(Object bean) {
+        Class<?> beanType = bean.getClass();
+        boolean isBenchmarkable = Arrays.stream(beanType.getMethods())
+                .anyMatch(m -> m.isAnnotationPresent(Benchmark.class));
+
+        // TODO: 7/5/2017 check if annotation is on
+        Object proxyBean = bean;
+        if (isBenchmarkable) {
+            proxyBean = Proxy.newProxyInstance(
+                    ClassLoader.getSystemClassLoader(),
+                    bean.getClass().getInterfaces(),
+                    new InvocationHandler() {
+                        @Override
+                        public Object invoke(Object proxy,
+                                             Method method, Object[] args)
+                                throws Throwable {
+                            System.out.println("Benchmarking : " + method.getName());
+                            return method.invoke(bean, args);
+                        }
+                    }
+            );
+        }
+
+        return proxyBean;
     }
 
     private BeanDefinition getBeanDefinition(String beanName) {

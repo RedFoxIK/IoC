@@ -7,7 +7,6 @@ public class Tweet {
     private String user;
     private String message;
 
-
     public Tweet() {
     }
 

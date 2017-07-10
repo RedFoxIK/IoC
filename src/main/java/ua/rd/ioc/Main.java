@@ -17,17 +17,15 @@ public class Main {
         Config config = new JavaConfig(beanDescriptions);
         Context context = new ApplicationContext(config);
 
-        System.out.println("Bean definitions : "
+        System.out.println("Bean definitions: "
                 + Arrays.toString(config.getBeanDefinitions()));
         System.out.println("Bean definition names: "
                 + Arrays.toString(context.getBeanDefinitionNames()));
 
         TweetRepository tweetRepository = context.getBean("tweetRepository");
 
-        System.out.println("Bean name : " + tweetRepository);
-        System.out.println("Tweets from repository : "
+        System.out.println("Bean name: " + tweetRepository);
+        System.out.println("Tweets from repository: "
                 + tweetRepository.getAllTweets());
-
-
     }
 }

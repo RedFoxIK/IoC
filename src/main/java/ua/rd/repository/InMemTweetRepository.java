@@ -11,10 +11,14 @@ public class InMemTweetRepository implements TweetRepository {
 
     private List<Tweet> tweets;
 
+    public InMemTweetRepository(List<Tweet> tweets) {
+        this.tweets = tweets;
+    }
+
     public void init() {
         tweets = Arrays.asList(
-                new Tweet("vitalii", "first tweet"),
-                new Tweet("dassem", "first sword")
+                new Tweet("yaroslava", "first tweet"),
+                new Tweet("kalashnyk", "first word")
         );
     }
 

@@ -4,8 +4,8 @@
        xsi:schemaLocation="
        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
 ">
-    <import resource="classpath:repoContext.xml"/>
-    <import resource="classpath:serviceContext.xml"/>
+    <!--<import resource="classpath:repoContext.xml"/>-->
+    <!--<import resource="classpath:serviceContext.xml"/>-->
 
     <bean name="tweet1" class="ua.rd.domain.Tweet" scope="prototype">
         <constructor-arg value="Yaroslava"/>

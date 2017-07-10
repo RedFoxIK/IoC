@@ -4,10 +4,15 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
     <bean name="tweetRepository" class="ua.rd.repository.InMemTweetRepository">
+
         <constructor-arg>
             <list>
                 <ref bean="tweet1"/>
                 <ref bean="tweet2"/>
+                <bean class="ua.rd.domain.Tweet">
+                    <constructor-arg value="111"/>
+                    <constructor-arg value="111"/>
+                </bean>
             </list>
         </constructor-arg>
     </bean>

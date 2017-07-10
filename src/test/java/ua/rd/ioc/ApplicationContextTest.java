@@ -1,9 +1,5 @@
 package ua.rd.ioc;
 
-/**
- * Created by Vitalii_Sharapov on 7/3/2017.
- */
-
 import org.junit.Test;
 import ua.rd.domain.Tweet;
 import ua.rd.repository.InMemTweetRepository;

@@ -1,8 +1,6 @@
 package ua.rd.ioc;
 
-/**
- * Created by Vitalii_Sharapov on 7/6/2017.
- */
+
 public class Bean {
     private Class<?> clazz;
     private boolean isPrototype;

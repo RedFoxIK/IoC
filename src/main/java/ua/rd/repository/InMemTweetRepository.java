@@ -6,9 +6,7 @@ import ua.rd.ioc.Benchmark;
 import java.util.Arrays;
 import java.util.List;
 
-/**
- * Created by Vitalii_Sharapov on 7/5/2017.
- */
+
 public class InMemTweetRepository implements TweetRepository {
 
     private List<Tweet> tweets;

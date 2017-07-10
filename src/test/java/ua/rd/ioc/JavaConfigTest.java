@@ -8,9 +8,7 @@ import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 
-/**
- * Created by Vitalii_Sharapov on 7/6/2017.
- */
+
 public class JavaConfigTest {
 
     @Test

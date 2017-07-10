@@ -2,9 +2,7 @@ package ua.rd.ioc;
 
 import java.util.Map;
 
-/**
- * Created by Vitalii_Sharapov on 7/3/2017.
- */
+
 public class JavaConfig implements Config {
 
     private BeanDefinition[] beanDefinitions;

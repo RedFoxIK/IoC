@@ -7,9 +7,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * Created by Vitalii_Sharapov on 7/3/2017.
- */
+
 public class Main {
     public static void main(String[] args) {
         Map<String, Bean> beanDescriptions = new HashMap<>();

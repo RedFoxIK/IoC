@@ -3,12 +3,6 @@ package ua.rd.ioc;
 import java.lang.reflect.*;
 import java.util.*;
 
-/**
- * Considered that bean has only one construct - non arg or with arg but not
- * both of them
- * <p>
- * Created by Vitalii_Sharapov on 7/3/2017.
- */
 public class ApplicationContext implements Context {
 
     private final Config config;
